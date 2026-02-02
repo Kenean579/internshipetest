@@ -6,7 +6,6 @@ class DataSeeder {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   Future<void> seedData() async {
-    // Provider 1
     await _db.collection('providers').doc('test_provider_1').set({
       'id': 'test_provider_1',
       'fullName': 'Kenean Hailu',
@@ -18,7 +17,6 @@ class DataSeeder {
       'createdAt': DateTime.now().toIso8601String(),
     });
 
-    // Provider 2
     await _db.collection('providers').doc('test_provider_2').set({
       'id': 'test_provider_2',
       'fullName': 'Helen Gebre',

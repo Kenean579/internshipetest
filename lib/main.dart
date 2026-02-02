@@ -9,7 +9,6 @@ import 'utils/styles.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  // Configured with Executive Professional theme
   runApp(const MyApp());
 }
 

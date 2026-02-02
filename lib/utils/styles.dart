@@ -14,9 +14,8 @@ class AppColors {
   static const Color textSecondary = Color(0xFF475569);
   static const Color textLight = Color(0xFF94A3B8);
 
-  static const Color error = Color(0xFF991B1B); // More professional brick red
-  static const Color success =
-      Color(0xFF065F46); // More professional deep green
+  static const Color error = Color(0xFF991B1B);
+  static const Color success = Color(0xFF065F46);
 
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
