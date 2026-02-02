@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
 import '../../utils/styles.dart';
-import '../../widgets/custom_text_field.dart';
-import '../../widgets/primary_button.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -35,22 +33,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
           password: _passwordController.text.trim(),
         );
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Registration Successful!'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          Navigator.pop(context); // Go back to login
+          AppUIHelpers.showSnackBar(context, 'Registration Successful!',
+              isError: false);
+          Navigator.pop(context);
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(e.toString()),
-              backgroundColor: AppColors.error,
-            ),
-          );
+          AppUIHelpers.showSnackBar(context, e.toString());
         }
       } finally {
         if (mounted) setState(() => _isLoading = false);
@@ -63,9 +52,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
-        title: const Text('Provider Registration'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        title: const Text('CREATE ACCOUNT'),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -73,62 +60,72 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Text(
+                'PARTNER REGISTRATION',
+                style: AppTextStyles.display.copyWith(
+                  letterSpacing: 1,
+                  fontSize: 24,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Create your account to get started.',
+                style: AppTextStyles.bodySecondary,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
               Card(
-                elevation: 2,
+                color: AppColors.surface,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
-                color: Colors.white,
                 child: Padding(
                   padding: const EdgeInsets.all(24),
                   child: Form(
                     key: _formKey,
                     child: Column(
                       children: [
-                        CustomTextField(
-                          label: 'Full Name',
-                          controller: _fullNameController,
-                          validator: (v) => v!.isEmpty ? 'Required' : null,
-                        ),
+                        _buildSimpleField('Full Name', _fullNameController,
+                            Icons.person_outline),
                         const SizedBox(height: 16),
-                        CustomTextField(
-                          label: 'Email',
-                          controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (v) => v!.isEmpty ? 'Required' : null,
-                        ),
+                        _buildSimpleField('Email', _emailController,
+                            Icons.alternate_email_rounded,
+                            type: TextInputType.emailAddress),
                         const SizedBox(height: 16),
-                        CustomTextField(
-                          label: 'Phone',
-                          controller: _phoneController,
-                          keyboardType: TextInputType.phone,
-                          validator: (v) => v!.isEmpty ? 'Required' : null,
-                        ),
+                        _buildSimpleField(
+                            'Phone', _phoneController, Icons.phone_android,
+                            type: TextInputType.phone),
                         const SizedBox(height: 16),
-                        CustomTextField(
-                          label: 'Company Name',
-                          controller: _companyController,
-                          validator: (v) => v!.isEmpty ? 'Required' : null,
-                        ),
+                        _buildSimpleField('Company Name', _companyController,
+                            Icons.business_outlined),
                         const SizedBox(height: 16),
-                        CustomTextField(
-                          label: 'License Number',
-                          controller: _licenseController,
-                          validator: (v) => v!.isEmpty ? 'Required' : null,
-                        ),
+                        _buildSimpleField('License Number', _licenseController,
+                            Icons.badge_outlined),
                         const SizedBox(height: 16),
-                        CustomTextField(
-                          label: 'Password',
-                          controller: _passwordController,
-                          isPassword: true,
-                          validator: (v) =>
-                              v!.length < 6 ? 'Min 6 chars' : null,
-                        ),
-                        const SizedBox(height: 24),
-                        PrimaryButton(
-                          text: 'Register',
-                          onPressed: _register,
-                          isLoading: _isLoading,
+                        _buildSimpleField(
+                            'Password', _passwordController, Icons.lock_outline,
+                            isPassword: true),
+                        const SizedBox(height: 32),
+                        ElevatedButton(
+                          onPressed: _isLoading ? null : _register,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size(double.infinity, 56),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: _isLoading
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white)
+                              : Text(
+                                  'REGISTER NOW',
+                                  style: AppTextStyles.button.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                         ),
                       ],
                     ),
@@ -138,6 +135,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildSimpleField(
+      String label, TextEditingController controller, IconData icon,
+      {bool isPassword = false, TextInputType type = TextInputType.text}) {
+    return TextFormField(
+      controller: controller,
+      obscureText: isPassword,
+      keyboardType: type,
+      validator: (v) {
+        if (v == null || v.isEmpty) return 'Required';
+        if (label == 'Email') {
+          final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+          if (!emailRegex.hasMatch(v)) return 'Enter a valid email';
+        }
+        if (isPassword && v.length < 6) return 'Min 6 chars';
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
       ),
     );
   }

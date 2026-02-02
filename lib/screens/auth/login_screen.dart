@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
 import '../../utils/styles.dart';
-import '../../widgets/custom_text_field.dart';
-import '../../widgets/primary_button.dart';
 import '../customer/public_home_screen.dart';
 import 'register_screen.dart';
 
@@ -28,15 +26,9 @@ class _LoginScreenState extends State<LoginScreen> {
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
-        // Navigation is handled by AuthWrapper in main.dart
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(e.toString()),
-              backgroundColor: AppColors.error,
-            ),
-          );
+          AppUIHelpers.showSnackBar(context, e.toString());
         }
       } finally {
         if (mounted) setState(() => _isLoading = false);
@@ -50,107 +42,131 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: AppColors.background,
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(horizontal: 32),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const Icon(
+                Icons.account_balance_rounded,
+                size: 64,
+                color: AppColors.primary,
+              ),
+              const SizedBox(height: 24),
               Text(
-                'Welcome Back',
-                style: AppTextStyles.header,
-                textAlign: TextAlign.center,
+                'SERVICE HUB',
+                style: AppTextStyles.display.copyWith(
+                  letterSpacing: 1,
+                  fontSize: 24,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
-                'Sign in to manage your services',
+                'Sign in to manage your services.',
                 style: AppTextStyles.bodySecondary,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 48),
               Card(
-                elevation: 2,
+                color: AppColors.surface,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
-                color: Colors.white,
-                surfaceTintColor: Colors.white,
                 child: Padding(
                   padding: const EdgeInsets.all(24),
                   child: Form(
                     key: _formKey,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        CustomTextField(
-                          label: 'Email',
+                        TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
+                          decoration: const InputDecoration(
+                            labelText: 'Email',
+                            prefixIcon: Icon(Icons.alternate_email_rounded),
+                          ),
                           validator: (value) =>
                               value!.isEmpty ? 'Please enter your email' : null,
                         ),
-                        const SizedBox(height: 16),
-                        CustomTextField(
-                          label: 'Password',
+                        const SizedBox(height: 20),
+                        TextFormField(
                           controller: _passwordController,
-                          isPassword: true,
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            labelText: 'Password',
+                            prefixIcon: Icon(Icons.lock_rounded),
+                          ),
                           validator: (value) => value!.isEmpty
                               ? 'Please enter your password'
                               : null,
                         ),
-                        const SizedBox(height: 24),
-                        PrimaryButton(
-                          text: 'Sign In',
-                          onPressed: _login,
-                          isLoading: _isLoading,
+                        const SizedBox(height: 32),
+                        ElevatedButton(
+                          onPressed: _isLoading ? null : _login,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            minimumSize: const Size(double.infinity, 56),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: _isLoading
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white)
+                              : Text(
+                                  'SIGN IN',
+                                  style: AppTextStyles.button.copyWith(
+                                    letterSpacing: 1.5,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                         ),
                       ],
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text("Don't have an account? ", style: AppTextStyles.body),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const RegisterScreen(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      'Register',
-                      style: AppTextStyles.body.copyWith(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
               const SizedBox(height: 32),
-              OutlinedButton(
+              TextButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => PublicHomeScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => const RegisterScreen(),
+                    ),
                   );
                 },
-                style: OutlinedButton.styleFrom(
-                  side: const BorderSide(color: AppColors.primary),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                child: RichText(
+                  text: TextSpan(
+                    text: "New here? ",
+                    style: AppTextStyles.bodySecondary,
+                    children: [
+                      TextSpan(
+                        text: "CREATE ACCOUNT",
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                child: Text(
-                  'View Public Service Catalog (Customer)',
-                  style: AppTextStyles.button.copyWith(
-                    color: AppColors.primary,
-                  ),
+              ),
+              const SizedBox(height: 16),
+              TextButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PublicHomeScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.explore_outlined, size: 20),
+                label: const Text('EXPLORE CATALOG'),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.textSecondary,
                 ),
               ),
             ],

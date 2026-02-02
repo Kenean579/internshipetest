@@ -31,6 +31,7 @@ class AuthService {
           'phone': phone,
           'companyName': companyName,
           'licenseNumber': licenseNumber,
+          'slug': fullName.toLowerCase().replaceAll(' ', '-'),
           'createdAt': DateTime.now().toIso8601String(),
         });
         return user;
@@ -66,10 +67,8 @@ class AuthService {
   Future<AppUser?> getCurrentUserData() async {
     User? user = _auth.currentUser;
     if (user != null) {
-      DocumentSnapshot doc = await _db
-          .collection('providers')
-          .doc(user.uid)
-          .get();
+      DocumentSnapshot doc =
+          await _db.collection('providers').doc(user.uid).get();
       if (doc.exists) {
         return AppUser.fromMap(doc.data() as Map<String, dynamic>, doc.id);
       }

@@ -5,6 +5,7 @@ class AppUser {
   final String phone;
   final String companyName;
   final String licenseNumber;
+  final String? slug;
 
   AppUser({
     required this.id,
@@ -13,6 +14,7 @@ class AppUser {
     required this.phone,
     required this.companyName,
     required this.licenseNumber,
+    this.slug,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +25,7 @@ class AppUser {
       'phone': phone,
       'companyName': companyName,
       'licenseNumber': licenseNumber,
+      'slug': slug ?? fullName.toLowerCase().replaceAll(' ', '-'),
     };
   }
 
@@ -34,6 +37,7 @@ class AppUser {
       phone: map['phone'] ?? '',
       companyName: map['companyName'] ?? '',
       licenseNumber: map['licenseNumber'] ?? '',
+      slug: map['slug'],
     );
   }
 }

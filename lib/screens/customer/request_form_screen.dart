@@ -3,8 +3,7 @@ import '../../models/service_item.dart';
 import '../../models/service_request.dart';
 import '../../services/db_service.dart';
 import '../../utils/styles.dart';
-import '../../widgets/custom_text_field.dart';
-import '../../widgets/primary_button.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class RequestFormScreen extends StatefulWidget {
@@ -30,6 +29,7 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
       try {
         final request = ServiceRequest(
           id: const Uuid().v4(),
+          providerId: widget.service.providerId,
           serviceId: widget.service.id,
           serviceName: widget.service.serviceName,
           totalPrice: widget.service.totalPrice,
@@ -65,9 +65,7 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
         }
       } catch (e) {
         if (mounted) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(e.toString())));
+          AppUIHelpers.showSnackBar(context, e.toString());
         }
       } finally {
         if (mounted) setState(() => _isLoading = false);
@@ -78,7 +76,9 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Request ${widget.service.serviceName}')),
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+          title: Text('REQUEST ${widget.service.serviceName.toUpperCase()}')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
         child: Form(
@@ -86,34 +86,55 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Text(
-                'Enter your details for the service request.',
-                style: AppTextStyles.bodySecondary,
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Text(
+                        widget.service.serviceName,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Total Price: ETB ${NumberFormat('#,##0').format(widget.service.totalPrice)}',
+                        style: const TextStyle(
+                            color: AppColors.primary, fontSize: 16),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              const SizedBox(height: 24),
-              CustomTextField(
-                label: 'Your Name',
+              const SizedBox(height: 32),
+              TextFormField(
                 controller: _nameController,
+                decoration: const InputDecoration(labelText: 'Full Name'),
                 validator: (v) => v!.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 16),
-              CustomTextField(
-                label: 'Phone Number',
+              TextFormField(
                 controller: _phoneController,
+                decoration: const InputDecoration(labelText: 'Phone Number'),
                 keyboardType: TextInputType.phone,
                 validator: (v) => v!.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 16),
-              CustomTextField(
-                label: 'Address / Location',
+              TextFormField(
                 controller: _addressController,
+                decoration: const InputDecoration(labelText: 'Service Address'),
+                maxLines: 2,
                 validator: (v) => v!.isEmpty ? 'Required' : null,
               ),
               const SizedBox(height: 32),
-              PrimaryButton(
-                text: 'Submit Request',
-                onPressed: _submit,
-                isLoading: _isLoading,
+              ElevatedButton(
+                onPressed: _isLoading ? null : _submit,
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 56),
+                ),
+                child: _isLoading
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : const Text('SUBMIT REQUEST'),
               ),
             ],
           ),

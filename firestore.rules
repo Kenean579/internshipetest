@@ -1,0 +1,32 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Providers collection rules
+    match /providers/{providerId} {
+      allow read: if true; // Publicly readable for catalog views
+      allow write: if request.auth != null && request.auth.uid == providerId;
+    }
+
+    // Categories collection rules
+    match /categories/{categoryId} {
+      allow read: if true; // Publicly readable
+      allow write: if request.auth != null && request.resource.data.providerId == request.auth.uid;
+      allow delete: if request.auth != null; // Simplified for test
+    }
+
+    // Services collection rules
+    match /services/{serviceId} {
+      allow read: if true; // Publicly readable
+      allow write: if request.auth != null && request.resource.data.providerId == request.auth.uid;
+      allow delete: if request.auth != null;
+    }
+
+    // Service Requests collection rules
+    match /requests/{requestId} {
+      allow create: if true; // Publicly creatable by customers
+      allow read, write: if request.auth != null; // Only providers can read/manage
+    }
+  }
+}
