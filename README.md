@@ -9,29 +9,37 @@ A premium Flutter application built for the **Qelem Meda Technologies Internship
 ### 1. Provider Login & Registration
 *Secure access for service providers with automated profile creation.*
 
-![Login Screen](screenshots/login.png)
-![Register Screen](screenshots/register.png)
+<table>
+  <tr>
+    <td><img src="screenshots/login.png" width="400" alt="Login Screen"></td>
+    <td><img src="screenshots/register.png" width="400" alt="Register Screen"></td>
+  </tr>
+</table>
 
-### 2. Provider Dashboard
+### 2. Provider Dashboard & Category Management
 *Management hub for categories, services, and incoming requests.*
 
-![Dashboard](screenshots/dashboard.png)
+<table>
+  <tr>
+    <td><img src="screenshots/dashboard.png" width="400" alt="Dashboard"></td>
+    <td><img src="screenshots/category_edit.png" width="400" alt="Edit Category"></td>
+  </tr>
+</table>
 
-### 3. Category & Service Management
-*Full CRUD capabilities for maintaining a professional catalog.*
+### 3. Public Catalog & Requests
+*Clean customer exploration and intuitive booking form.*
 
-![Edit Category](screenshots/category_edit.png)
-![Service List](screenshots/service_list.png)
+<table>
+  <tr>
+    <td><img src="screenshots/public_catalog.png" width="400" alt="Public Catalog"></td>
+    <td><img src="screenshots/service_list.png" width="400" alt="Service List"></td>
+  </tr>
+</table>
 
-### 4. Public Catalog (Customer View)
-*Clean, real-time catalog for customer exploration.*
+### 4. Request Submission
+*Booking services at your fingertips.*
 
-![Public Catalog](screenshots/public_catalog.png)
-
-### 5. Request Submission
-*Simple and intuitive form for customers to book services.*
-
-![Request Form](screenshots/request_form.png)
+<img src="screenshots/request_form.png" width="400" alt="Request Form">
 
 ---
 
