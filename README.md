@@ -49,8 +49,8 @@ flutter run
 
 ## 🧪 Seeding & Test Data
 The seeder has already pre-populated the following test accounts:
-- **User 1**: `kenean@example.com`
-- **User 2**: `hailukenean@example.com`
+- **User 1**: `keneanhailu@gmail.com`
+- **User 2**: `hailukenean@gmail.com`
 - **Common Password**: `hakfm12345`
 
 ---
